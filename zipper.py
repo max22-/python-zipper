@@ -27,7 +27,7 @@ class Zipper:
             raise ZipperError('Already at leftmost node')
         lr, self.path = self.path[0], self.path[1:]
         new_focus = lr['l'][-1]
-        self.path = [{'l': lr['l'][:-1], 'r': [self.focus] + lr['r']}]
+        self.path = [{'l': lr['l'][:-1], 'r': [self.focus] + lr['r']}] + self.path
         self.focus = new_focus
         return self
         
