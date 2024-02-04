@@ -8,6 +8,9 @@ class Zipper:
 
     def is_branch(self):
         return isinstance(self.focus, dict)
+    
+    def is_root(self):
+        return len(self.path) == 0
 
     def up(self):
         if len(self.path) == 0:
