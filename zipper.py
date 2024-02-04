@@ -55,6 +55,10 @@ class Zipper:
         while len(self.path) > 0:
             self.up()
 
+    def bottom(self):
+        while self.is_branch():
+            self.down()
+
     def leftmost(self):
         if len(self.path) > 0:
             while len(self.path[0]['l']) > 0:
