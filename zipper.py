@@ -6,6 +6,9 @@ class Zipper:
         self.focus = tree
         self.path = []
 
+    def is_branch(self):
+        return isinstance(self.focus, dict)
+
     def up(self):
         if len(self.path) == 0:
             raise ZipperError('Already at the top')
@@ -14,7 +17,7 @@ class Zipper:
         return self
 
     def down(self):
-        if (not isinstance(self.focus, dict)) or len(self.focus) == 0 :
+        if (not self.is_branch()) or len(self.focus) == 0 :
             raise ZipperError('Already at the bottom')
         self.path = [{'name': self.focus['name'], 'l': [], 'r': self.focus['body'][1:]}] + self.path
         self.focus = self.focus['body'][0]
@@ -70,7 +73,7 @@ class Zipper:
         return self
     
     def append_child(self, c):
-        if not isinstance(self.focus, dict):
+        if not self.is_branch():
             raise ZipperError('Cannot add child to leaf node')
         self.focus['body'].append(c)
         return self
