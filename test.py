@@ -5,7 +5,7 @@ example = {'name': '+', 'body': [{'name':'*', 'body': [1, 2]}, {'name':'*', 'bod
 z = Zipper(example)
 
 
-z.down().right().edit(lambda d: {'name': '/', 'body': d['body']}).top()
+z.down().right().edit(lambda d: {'name': '/', 'body': d['body']}).up().append_child({'name': '+', 'body': [5, 6]}).top()
 print(z.get())
 
 def match(l):

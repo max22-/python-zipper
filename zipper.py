@@ -69,5 +69,11 @@ class Zipper:
         self.focus = f(self.focus)
         return self
     
+    def append_child(self, c):
+        if not isinstance(self.focus, dict):
+            raise ZipperError('Cannot add child to leaf node')
+        self.focus['body'].append(c)
+        return self
+    
     def __repr__(self):
         return f"({self.focus}, {self.path})"
