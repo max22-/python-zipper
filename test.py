@@ -1,26 +1,24 @@
 from zipper import Zipper, ZipperError
 
-example = ['+', ['*', 1, 2], ['*', 3, 4]]
+example = {'name': '+', 'body': [{'name':'*', 'body': [1, 2]}, {'name':'*', 'body':[3, 4]}]}
 
 z = Zipper(example)
 
 
-z.down().right().right().down().set('/').topmost()
+z.down().right().edit(lambda d: {'name': '/', 'body': d['body']}).top()
 print(z.get())
 
 def match(l):
     print(f"matching {l}")
     z = Zipper(l)
     try:
+        if z.get()['name'] != '+':
+            return False
         z.down()
-        if z.get() != '+':
+        if z.get()['name'] != '*':
             return False
         z.right()
-        z.down()
-        if z.get() != '*':
-            return False
-        z.up().right().down()
-        if z.get() != '*':
+        if z.get()['name'] != '*':
             print('expected *')
             return False
     except ZipperError:
@@ -41,9 +39,19 @@ while True:
     elif k == 'd':
         z.right()
     elif k == 'g':
-        print(z.get())
+        n = z.get()
+        if isinstance(n, dict):
+            print(n['name'])
+        else:
+            print(n)
     elif k == 'l':
         z.leftmost()
     elif k == 'r':
         z.rightmost()
-    print(z)
+    n = z.get()
+    print(n)
+    if isinstance(n, dict):
+        print(n['name'])
+    else:
+        print(n)
+    #print(z)

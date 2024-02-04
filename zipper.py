@@ -9,15 +9,15 @@ class Zipper:
     def up(self):
         if len(self.path) == 0:
             raise ZipperError('Already at the top')
-        lr, self.path = self.path[0], self.path[1:]
-        self.focus = lr['l'] + [self.focus] + lr['r']
+        crumb, self.path = self.path[0], self.path[1:]
+        self.focus = {'name': crumb['name'], 'body': crumb['l'] + [self.focus] + crumb['r']}
         return self
 
     def down(self):
-        if (not isinstance(self.focus, list)) or len(self.focus) == 0 :
+        if (not isinstance(self.focus, dict)) or len(self.focus) == 0 :
             raise ZipperError('Already at the bottom')
-        self.path = [ {'l': [], 'r': self.focus[1:]}] + self.path
-        self.focus = self.focus[0]
+        self.path = [{'name': self.focus['name'], 'l': [], 'r': self.focus['body'][1:]}] + self.path
+        self.focus = self.focus['body'][0]
         return self
 
     def left(self):
@@ -25,10 +25,12 @@ class Zipper:
             raise ZipperError('Left of root')
         if len(self.path[0]['l']) == 0:
             raise ZipperError('Already at leftmost node')
-        lr, self.path = self.path[0], self.path[1:]
-        new_focus = lr['l'][-1]
-        self.path = [{'l': lr['l'][:-1], 'r': [self.focus] + lr['r']}] + self.path
-        self.focus = new_focus
+        l = self.path[0]['l']
+        r = self.path[0]['r']
+        r = [self.focus] + r
+        self.focus = l.pop()
+        self.path[0]['l'] = l
+        self.path[0]['r'] = r
         return self
         
 
@@ -37,13 +39,16 @@ class Zipper:
             raise ZipperError('Right of root')
         if len(self.path[0]['r']) == 0:
             raise ZipperError('Already at rightmost node')
-        lr, self.path = self.path[0], self.path[1:]
-        new_focus = lr['r'][0]
-        self.path = [{'l': lr['l'] + [self.focus], 'r': lr['r'][1:]}] + self.path
-        self.focus = new_focus
+        l = self.path[0]['l']
+        r = self.path[0]['r']
+        l.append(self.focus)
+        self.focus = r[0]
+        r = r[1:]
+        self.path[0]['l'] = l
+        self.path[0]['r'] = r
         return self
 
-    def topmost(self):
+    def top(self):
         while len(self.path) > 0:
             self.up()
 
@@ -60,8 +65,8 @@ class Zipper:
     def get(self):
         return self.focus
     
-    def set(self, val):
-        self.focus = val
+    def edit(self, f):
+        self.focus = f(self.focus)
         return self
     
     def __repr__(self):
