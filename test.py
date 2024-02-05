@@ -2,7 +2,16 @@ from zipper import Zipper, ZipperError
 
 example = {'name': '+', 'body': [{'name':'*', 'body': [1, 2]}, {'name':'*', 'body':[3, 4]}]}
 
-z = Zipper(example)
+def make_node(n, c):
+    n_copy = dict(n)
+    n_copy['body'] = c
+    return n_copy
+
+z = Zipper(
+    lambda n: isinstance(n, dict),
+    lambda n: n['body'],
+    make_node,
+    example)
 
 
 z.down().right().edit(lambda d: {'name': '/', 'body': d['body']}).up().append_child({'name': '+', 'body': [5, 6]}).top()
@@ -10,7 +19,11 @@ print(z.get())
 
 def match(l):
     print(f"matching {l}")
-    z = Zipper(l)
+    z = Zipper(
+        lambda n: isinstance(n, dict),
+        lambda n: n['body'],
+        make_node,
+        l)
     try:
         if z.get()['name'] != '+':
             return False
@@ -19,7 +32,7 @@ def match(l):
             return False
         z.right()
         if z.get()['name'] != '*':
-            print('expected *')
+            print(f"expected *, got {z.get()['name']}")
             return False
     except ZipperError:
         return False

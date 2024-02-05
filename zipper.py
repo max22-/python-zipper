@@ -2,12 +2,12 @@ class ZipperError(Exception):
     pass
 
 class Zipper:
-    def __init__(self, tree):
-        self.focus = tree
+    def __init__(self, is_branch, children, make_node, root):
+        self._is_branch = is_branch
+        self._children = children
+        self._make_node = make_node
+        self.focus = root
         self.path = []
-
-    def is_branch(self):
-        return isinstance(self.focus, dict)
     
     def is_root(self):
         return len(self.path) == 0
@@ -16,14 +16,15 @@ class Zipper:
         if len(self.path) == 0:
             raise ZipperError('Already at the top')
         crumb, self.path = self.path[0], self.path[1:]
-        self.focus = {'name': crumb['name'], 'body': crumb['l'] + [self.focus] + crumb['r']}
+        self.focus = self._make_node(crumb['pnode'], crumb['l'] + [self.focus] + crumb['r'])
         return self
 
     def down(self):
-        if (not self.is_branch()) or len(self.focus) == 0 :
+        if (not self._is_branch(self.focus)) or len(self._children(self.focus)) == 0 :
             raise ZipperError('Already at the bottom')
-        self.path = [{'name': self.focus['name'], 'l': [], 'r': self.focus['body'][1:]}] + self.path
-        self.focus = self.focus['body'][0]
+        children = self._children(self.focus)
+        self.path = [{'pnode': self.focus, 'l': [], 'r': children[1:]}] + self.path
+        self.focus = children[0]
         return self
 
     def left(self):
@@ -59,7 +60,7 @@ class Zipper:
             self.up()
 
     def bottom(self):
-        while self.is_branch():
+        while self._is_branch(self.focus):
             self.down()
 
     def leftmost(self):
@@ -80,9 +81,11 @@ class Zipper:
         return self
     
     def append_child(self, c):
-        if not self.is_branch():
+        if not self._is_branch(self.focus):
             raise ZipperError('Cannot add child to leaf node')
-        self.focus['body'].append(c)
+        children = self._children(self.focus)
+        children.append(c)
+        self.focus = self._make_node(self.focus, children)
         return self
     
     def __repr__(self):
