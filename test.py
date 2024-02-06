@@ -15,7 +15,7 @@ z = Zipper(
 
 
 z.down().right().edit(lambda d: {'name': '/', 'body': d['body']}).up().append_child({'name': '+', 'body': [5, 6]}).top()
-print(z.get())
+print(z.node())
 
 def match(l):
     print(f"matching {l}")
@@ -25,14 +25,14 @@ def match(l):
         make_node,
         l)
     try:
-        if z.get()['name'] != '+':
+        if z.node()['name'] != '+':
             return False
         z.down()
-        if z.get()['name'] != '*':
+        if z.node()['name'] != '*':
             return False
         z.right()
-        if z.get()['name'] != '*':
-            print(f"expected *, got {z.get()['name']}")
+        if z.node()['name'] != '*':
+            print(f"expected *, got {z.node()['name']}")
             return False
     except ZipperError:
         return False
@@ -52,7 +52,7 @@ while True:
     elif k == 'd':
         z.right()
     elif k == 'g':
-        n = z.get()
+        n = z.node()
         if isinstance(n, dict):
             print(n['name'])
         else:
@@ -61,7 +61,7 @@ while True:
         z.leftmost()
     elif k == 'r':
         z.rightmost()
-    n = z.get()
+    n = z.node()
     print(n)
     if isinstance(n, dict):
         print(n['name'])

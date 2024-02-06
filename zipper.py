@@ -73,7 +73,7 @@ class Zipper:
             while len(self.path[0]['r']) > 0:
                 self.right()
 
-    def get(self):
+    def node(self):
         return self.focus
     
     def edit(self, f):
