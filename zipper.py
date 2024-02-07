@@ -58,20 +58,24 @@ class Zipper:
     def top(self):
         while len(self.path) > 0:
             self.up()
+        return self
 
     def bottom(self):
         while self._is_branch(self.focus):
             self.down()
+        return self
 
     def leftmost(self):
         if len(self.path) > 0:
             while len(self.path[0]['l']) > 0:
                 self.left()
+        return self
 
     def rightmost(self):
         if len(self.path) > 0:
             while len(self.path[0]['r']) > 0:
                 self.right()
+        return self
 
     def node(self):
         return self.focus
