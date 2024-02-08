@@ -96,6 +96,22 @@ class Zipper:
         self.focus = f(self.focus)
         return self
     
+    def remove(self):
+        if self.is_root():
+            raise ZipperError("Remove at root")
+        r = self.path[0]['r']
+        l = self.path[0]['l']
+        if len(r) > 0:
+            self.focus = r[0]
+            self.path[0]['r'] = r[1:]
+        elif len(l) > 0:
+            self.focus = l.pop()
+            self.path[0]['l'] = l
+            self.up()
+        else:
+            self.up()
+            self.focus = self._make_node(self.focus, [])
+    
     def append_child(self, c):
         if not self._is_branch(self.focus):
             raise ZipperError('Cannot add child to leaf node')
