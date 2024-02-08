@@ -61,9 +61,11 @@ class Zipper:
         return self
 
     def bottom(self):
-        while self._is_branch(self.focus):
-            self.down()
-        return self
+        try:
+            while True:
+                self.down()
+        except ZipperError:
+            return self
 
     def leftmost(self):
         if len(self.path) > 0:
