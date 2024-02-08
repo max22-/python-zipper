@@ -51,6 +51,10 @@ while True:
         z.left()
     elif k == 'd':
         z.right()
+    elif k == 'w':
+        z.post_order_next()
+    elif k == 'x':
+        z.post_order_next(start=True)
     elif k == 'g':
         n = z.node()
         if isinstance(n, dict):

@@ -78,6 +78,16 @@ class Zipper:
             while len(self.path[0]['r']) > 0:
                 self.right()
         return self
+    
+    def post_order_next(self, start=False):
+        if not start and self.is_root():
+            raise ZipperError('Tree already walked')
+        if start:
+            return self.bottom()
+        try:
+            return self.right().bottom()
+        except ZipperError:
+            return self.up()
 
     def node(self):
         return self.focus
