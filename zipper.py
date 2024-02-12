@@ -11,6 +11,9 @@ class Zipper:
     
     def is_root(self):
         return len(self.path) == 0
+    
+    def is_branch(self):
+        return self._is_branch(self.focus)
 
     def up(self):
         if len(self.path) == 0:
