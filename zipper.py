@@ -95,6 +95,11 @@ class Zipper:
     def node(self):
         return self.focus
     
+    def right_siblings(self):
+        if self.is_root():
+            raise ZipperError('Right siblings of root')
+        return self.path[0]['r']
+    
     def edit(self, f):
         self.focus = f(self.focus)
         return self
