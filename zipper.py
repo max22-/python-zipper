@@ -95,6 +95,12 @@ class Zipper:
     def node(self):
         return self.focus
     
+    def children(self):
+        if self.is_branch():
+            return self._children(self.focus)
+        else:
+            raise ZipperError('Children of leaf node')
+    
     def right_siblings(self):
         if self.is_root():
             raise ZipperError('Right siblings of root')
